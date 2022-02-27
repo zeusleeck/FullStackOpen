@@ -1,7 +1,13 @@
 title 0.4: new note
 
 browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note
-server-->browser: Status Code 302
+server-->browser: Status Code 302 Redirect 
+
+note over browser:
+browser makes a http request to the
+redirected location.
+end note
+
 browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/notes
 server-->browser: HTML-code
 browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
