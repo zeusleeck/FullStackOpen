@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import ContactForm from './components/Forms'
-import Contacts from './components/Contacts'
+import { Filter } from './components/Filter'
+import PersonForm from './components/Form'
+import Contacts from './components/Persons'
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -46,9 +47,12 @@ const App = () => {
 
   return (
     <div>
-      <ContactForm addperson={addperson} filterName = {filterName} filterByName = {filterByName} newName={newName} handleNewName = {handleNewName} newNumber={newNumber} handleNewNumber={handleNewNumber}/>
+      <h2>Phonebook</h2>
+      <Filter addperson={addperson} filterName={filterName} filterByName={filterByName} />
+      <h2>Add a new</h2>
+      <PersonForm addperson={addperson} filterName = {filterName} filterByName = {filterByName} newName={newName} handleNewName = {handleNewName} newNumber={newNumber} handleNewNumber={handleNewNumber}/>
       <h2>Numbers</h2>
-        <Contacts filterName={filterName} persons={persons}/>
+      <Contacts filterName={filterName} persons={persons}/>
     </div>
   )
 }

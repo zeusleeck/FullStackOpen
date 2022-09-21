@@ -1,3 +1,13 @@
+const Filter = (props) => {
+   return(
+    <div>
+        <div>
+            filter shown with <input value={props.filterName} onChange={props.filterByName}/>
+        </div>
+    </div>
+   ) 
+}
+
 const FilteredContact = (props) => {
     return(
         <table>
@@ -14,4 +24,4 @@ const FilteredContact = (props) => {
     )
 }
 
-export default FilteredContact
+export {Filter, FilteredContact}

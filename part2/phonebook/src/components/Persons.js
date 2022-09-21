@@ -1,6 +1,6 @@
-import FilteredContact from "./Filter"
+import {FilteredContact} from "./Filter"
 
-const Contacts = (props) => {
+const Persons = (props) => {
     if(props.filterName){
       return(
         <FilteredContact persons={props.persons} filterName={props.filterName}/>
@@ -23,4 +23,4 @@ const Contacts = (props) => {
     }
   }
 
-  export default Contacts
+  export default Persons
