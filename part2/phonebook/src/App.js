@@ -1,39 +1,6 @@
 import { useState } from 'react'
-
-const DisplayContacts = (props) => {
-  if(props.filterName){
-    return(
-      <table>
-        <tbody>
-          {props.persons.filter(person => person.name.toLowerCase().includes(props.filterName.toLowerCase())).map((person) => 
-            <tr key = {person.id}>
-              <td>
-                {person.name} {person.number}
-              </td>
-            </tr>
-            )}
-        </tbody>
-      </table>
-    )
-  }
-  else{
-    console.log(props.persons)
-    return(
-      <table>
-        <tbody>
-          {props.persons.map((person) => 
-                <tr key = {person.id}>
-                  <td>
-                    {person.name} {person.number}
-                  </td>
-                </tr>
-                )}
-        </tbody>
-      </table>
-    )
-  }
-}
-
+import ContactForm from './components/Forms'
+import Contacts from './components/Contacts'
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -45,7 +12,6 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filterName, setFilterName] = useState('')
-  //const [filteredContact, setFilteredContact] = useState('')
 
   const addperson = (event) => {
     event.preventDefault()
@@ -80,26 +46,9 @@ const App = () => {
 
   return (
     <div>
-       <h2>Phonebook</h2>
-      <form onSubmit={addperson}>
-        <div>
-          filter shown with <input value={filterName} onChange={filterByName}/>
-        </div>
-
-      <h2>Add a new</h2>
-        <div>
-          name: <input value={newName} onChange={handleNewName}/>
-        </div>
-        <div>
-          number: <input value={newNumber} onChange={handleNewNumber}/>
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-      
+      <ContactForm addperson={addperson} filterName = {filterName} filterByName = {filterByName} newName={newName} handleNewName = {handleNewName} newNumber={newNumber} handleNewNumber={handleNewNumber}/>
       <h2>Numbers</h2>
-        <DisplayContacts filterName={filterName} persons={persons}/>
+        <Contacts filterName={filterName} persons={persons}/>
     </div>
   )
 }
