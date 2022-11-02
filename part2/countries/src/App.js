@@ -2,7 +2,6 @@ import axios from 'axios';
 import { useState , useEffect} from 'react'
 
 const DisplayOne = ({countrieslist}) => {
-  //console.log( "test: " + countrieslist.name.official) 
   const flag = countrieslist.map(country => country.flags.png)
   return(
     <table id = "one_country">
@@ -47,7 +46,8 @@ const DisplayOne = ({countrieslist}) => {
 }
 
 const FilterCountries = (props) =>{
-  const {filterCountry, countries} = props
+  const {filterCountry, countries, setCountries} = props
+
   let countrieslist = countries
 
   if (filterCountry !== null && filterCountry !== undefined){
@@ -64,25 +64,29 @@ const FilterCountries = (props) =>{
           <DisplayOne countrieslist={countrieslist} />
       )
     }
-  }
-  return(
-    <table>
-        <tbody> 
-          {countrieslist.map((country) => 
-            <tr key = {country.name.common}>
-              <td>
-                  {country.name.common}
-              </td>
-            </tr>
-          )}
-        </tbody>
-    </table>
-  )
+    else{
+      return(
+        <table>
+            <tbody> 
+              {countrieslist.map((country, i) => 
+                <tr key = {i}>
+                  <td>
+                      {country.name.common}
+                  </td>
+                  <td><button type="button" onClick={() => setCountries([country])}>show</button></td>
+                </tr>
+              )}
+            </tbody>
+        </table>
+      )
+    }
+  }  
 }
 
 const App = () => {
   const [filterCountry, setFilterCountry] = useState('')
   const [countries, setCountries] = useState([])
+  const [countriesToShow, setCountriesToShow] = useState([])
 
   useEffect(() => {
     console.log("Testing")
@@ -90,19 +94,20 @@ const App = () => {
     .then(response => {
       console.log('promise fulfilled')
       setCountries(response.data)
+      setCountriesToShow(response.data)
     })
   }, [])
 
   const filtercountries = (e) => {
     e.preventDefault()
+    setCountries(countriesToShow)
     setFilterCountry(e.target.value)
-
   } 
 
   return (
     <div>
-      <p>find countries <input value={filterCountry} onChange={filtercountries}/></p>
-      <FilterCountries filterCountry = {filterCountry} countries = {countries}/>
+      <p>find countries <input value={filterCountry} onChange={filtercountries} onClick = {filtercountries}/></p>
+      <FilterCountries filterCountry = {filterCountry} countries = {countries} setCountries={setCountries}/>
     </div>
   );
 }
