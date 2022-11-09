@@ -1,21 +1,37 @@
 import axios from 'axios';
 import { useState , useEffect} from 'react'
 
+const api_key = process.env.REACT_APP_API_KEY
+
 const DisplayOne = ({countrieslist}) => {
+  const [weathers, setWeathers] = useState('')
   const flag = countrieslist.map(country => country.flags.png)
+  const capital = countrieslist.map(country => country.capital[0])
+  
+  useEffect(() => {
+    const params = new URLSearchParams([['q', capital], ['appid', process.env.REACT_APP_API_KEY], ['units', "Celsius"]]);
+    axios.get("http://api.openweathermap.org/data/2.5/weather", {params})
+    .then(response => {
+      console.log('promise fulfilled 2')
+      setWeathers(response.data)
+    })
+  }, [])
+  
   return(
     <table id = "one_country">
       <thead><tr><td><h1>{countrieslist.map(country => country.name.common)}</h1></td></tr></thead>
       <tbody>
         <tr>
           <td>
-            <p>capital {countrieslist.map(country => country.capital[0])} <br/>
-            area {countrieslist.map(country => country.area)}</p>
+            <p>
+              capital {countrieslist.map(country => country.capital[0])} <br/>
+              area {countrieslist.map(country => country.area)}
+            </p>
           </td> 
-          </tr>
+        </tr>
         <tr>
           <td>
-           <h2>languages:</h2>
+            <h2>languages:</h2>
           </td>
         </tr>
         <tr>
@@ -40,6 +56,19 @@ const DisplayOne = ({countrieslist}) => {
             <img src={flag} alt = "flags"/>
           </td>
         </tr>
+        <tr>
+          <td>
+            <h2>Weather in {capital}</h2>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            tempurature {weathers.main?.temp} Celcius
+          </td>
+        </tr>
+        <tr>
+          <td>tempurature {weathers.wind?.speed} m/s</td>
+        </tr>
       </tbody>
     </table>
   )
@@ -61,7 +90,7 @@ const FilterCountries = (props) =>{
     }
     else if(countrieslist.length === 1){
       return (
-          <DisplayOne countrieslist={countrieslist} />
+        <DisplayOne countrieslist={countrieslist} />
       )
     }
     else{
@@ -89,7 +118,6 @@ const App = () => {
   const [countriesToShow, setCountriesToShow] = useState([])
 
   useEffect(() => {
-    console.log("Testing")
     axios.get("https://restcountries.com/v3.1/all")
     .then(response => {
       console.log('promise fulfilled')
