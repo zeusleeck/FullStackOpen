@@ -17,10 +17,14 @@ const FilteredContact = (props) => {
             personService
             .delete(selectedPerson.id)
             .then(response => {
-              console.log(response)
-          }).then(
-            window.location.reload()
-          )
+                props.setSuccessMessage(`Information of '${selectedPerson.name}' has been removed from server`)
+                console.log(response)
+                props.setRefreshKey((oldkey) => oldkey + 1)
+          }).catch(error => {
+            props.setErrorMessage(
+              `Information of '${selectedPerson.name}' was already removed from server`
+            )}, props.setRefreshKey((oldkey) => oldkey + 1)
+            )
         } else {
             alert("Operation has been canceled")
         }

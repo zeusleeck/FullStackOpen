@@ -1,26 +1,31 @@
 import { useState , useEffect} from 'react'
 import { Filter } from './components/Filter'
 import PersonForm from './components/Form'
-import Contacts from './components/Persons'
+import Persons from './components/Persons'
 import personService from './services/persons'
+import DisplayNotification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
+  const [refreshKey, setRefreshKey] = useState(0)
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filterName, setFilterName] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
 
   useEffect(() => {
     personService
       .getAll()
       .then(response => {
-        console.log('promise fulfilled')
+        console.log('Get all persons')
         setPersons(response.data)
-      })
-  }, [])
-  
+    })
+  }, [refreshKey])
+
+
   const addperson = (event) => {
-    //event.preventDefault()
+    event.preventDefault()
     const personObject = {
       name: newName,
       number: newNumber,
@@ -29,13 +34,15 @@ const App = () => {
 
     let newperson = persons.filter(person => person.name === newName)
     if (newperson.length > 0) {
-      if(window.confirm(newName + ' is already added to phonebook, replace the old numnber with the new one?') === true){
+      if(window.confirm(newName + ' is already added to phonebook, replace the old number with the new one?') === true){
           personService
             .update(newperson[0]?.id, personObject)
             .then(response => {
               console.log(response)
-              alert("Person has been updated")
-          })
+              setSuccessMessage(`'${newName}' has been updated`)
+              setRefreshKey((oldkey) => oldkey + 1)
+          }
+        )
       }
       else{
         alert("Operation has been canceled")
@@ -49,6 +56,8 @@ const App = () => {
         .create(personObject)
         .then(response => {
           console.log(response)
+          setSuccessMessage(`Added '${newName}'`)
+          setRefreshKey((oldkey) => oldkey + 1)
       })
     }
   }
@@ -71,11 +80,13 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Filter addperson={addperson} filterName={filterName} filterByName={filterByName} />
+      <DisplayNotification errorMessage={errorMessage} successMessage={successMessage}/>
+      <Filter addperson={addperson} filterName={filterName} filterByName={filterByName} errorMessage={errorMessage} successMessage={successMessage} setRefreshKey = {setRefreshKey} />
       <h2>Add a new</h2>
-      <PersonForm addperson={addperson} filterName = {filterName} filterByName = {filterByName} newName={newName} handleNewName = {handleNewName} newNumber={newNumber} handleNewNumber={handleNewNumber}/>
+      <PersonForm addperson={addperson} filterName = {filterName} filterByName = {filterByName} newName={newName} 
+      handleNewName = {handleNewName} newNumber={newNumber} handleNewNumber={handleNewNumber}/>
       <h2>Numbers</h2>
-      <Contacts filterName={filterName} persons={persons}/>
+      <Persons filterName={filterName} persons={persons} setErrorMessage={setErrorMessage} setSuccessMessage={setSuccessMessage} setRefreshKey = {setRefreshKey}/>
     </div>
   )
 }

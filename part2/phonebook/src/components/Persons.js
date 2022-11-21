@@ -9,10 +9,13 @@ const Persons = (props) => {
         personService
         .delete(selectedPerson.id)
         .then(response => {
-          console.log(response)
-      }).then(
-        window.location.reload()
-      )
+          props.setSuccessMessage(`Information of '${selectedPerson.name}' has been removed from server`)
+          props.setRefreshKey((oldkey) => oldkey + 1)
+        }).catch(error => {
+          props.setErrorMessage(
+            `Information of '${selectedPerson.name}' was already removed from server`
+          )},props.setRefreshKey((oldkey) => oldkey + 1)
+        )
     } else {
         alert("Operation has been canceled")
     }
@@ -20,7 +23,7 @@ const Persons = (props) => {
 
   if(props.filterName){
     return( 
-      <FilteredContact persons={props.persons} filterName={props.filterName}/>
+      <FilteredContact persons={props.persons} filterName={props.filterName} setErrorMessage={props.setErrorMessage} setSuccessMessage={props.setSuccessMessage} setRefreshKey = {props.setRefreshKey}/>
     )
   }
   else{
